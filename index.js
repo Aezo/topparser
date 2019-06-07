@@ -1,4 +1,15 @@
 
+const regex = RegExp("top - ([\\d:]+) up \\d+ days,\\s+[\\d:]+,\\s+\\d+ users?,\\s+load average: ([\\d.]+), ([\\d.]+), ([\\d.]+)", "");
+
+	function parseTopLine(_result,_name,_line){
+		_result[_name] = {};
+		var matches = _line.match(regex);
+
+		_result[_name].time = matches[1];
+		_result[_name].load1 = matches[2];
+		_result[_name].load5 = matches[3];
+		_result[_name].load10 = matches[4];
+	}
 
 	function parseLine(_result,_name,_line){
 		var line=_line.replace(RegExp("%","g"),"").split(":")[1].replace(RegExp(" ","g"),"")
@@ -37,7 +48,7 @@
 		var result={process:[]}
 		var data_line=data.split("\n")
 	//sys info
-	//parseLine("top",data_line[0])
+	parseTopLine(result,"top",data_line[0])
 	parseLine(result,"task",data_line[1])
 	parseLine(result,"cpu",data_line[2].replace(" us,","user,").replace(" sy,"," system,").replace(" id,"," idle,"))
 	//console.dir(data_line[2])
